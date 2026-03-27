@@ -1,0 +1,24 @@
+# Build output
+dist/
+.output/
+
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+
+# Astro
+.astro/
+
+# Temp
+og-preview.html
+public/og-preview.html
