@@ -45,7 +45,7 @@ const lang = getLangFromUrl(Astro.url);
 </BaseLayout>
 
 <script is:inline>
-  (function () {
+  function initSidebar() {
     var hamburger = document.getElementById('hamburger-btn');
     var sidebar = document.querySelector('.sidebar');
     var overlay = document.getElementById('sidebar-overlay');
@@ -71,9 +71,10 @@ const lang = getLangFromUrl(Astro.url);
     });
     overlay && overlay.addEventListener('click', closeSidebar);
 
-    // Close on nav link click (mobile navigation)
     document.querySelectorAll('.sidebar .nav-link').forEach(function (link) {
       link.addEventListener('click', closeSidebar);
     });
-  })();
+  }
+
+  document.addEventListener('astro:page-load', initSidebar);
 </script>

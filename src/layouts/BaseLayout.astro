@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { siteConfig } from '../data/config';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -46,6 +47,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://nicolasb
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={image} />
 
+    <ClientRouter />
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
@@ -73,56 +76,78 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://nicolasb
       (window as any).gsap = gsap;
       (window as any).ScrollTrigger = ScrollTrigger;
 
-      // Global: scroll reveal for data-animate="fade-up" elements
-      document.querySelectorAll('[data-animate="fade-up"]').forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-            },
-          }
-        );
-      });
+      function initAnimations() {
+        // Kill existing ScrollTrigger instances to avoid duplicates
+        ScrollTrigger.getAll().forEach((st) => st.kill());
 
-      // Global: scroll reveal for data-animate="reveal" elements
-      document.querySelectorAll('[data-animate="reveal"]').forEach((el) => {
-        gsap.fromTo(
-          el,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 0.8,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 85%',
-            },
-          }
-        );
-      });
+        // Global: scroll reveal for data-animate="fade-up" elements
+        document.querySelectorAll('[data-animate="fade-up"]').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 85%',
+              },
+            }
+          );
+        });
+
+        // Global: scroll reveal for data-animate="reveal" elements
+        document.querySelectorAll('[data-animate="reveal"]').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 85%',
+              },
+            }
+          );
+        });
+      }
+
+      // Run on first load and after every View Transition
+      document.addEventListener('astro:page-load', initAnimations);
     </script>
 
     <!-- Lenis smooth scroll global init -->
     <script>
       import Lenis from 'lenis';
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-      });
 
-      function raf(time: number) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
+      let lenis: Lenis | null = null;
+      let rafId: number | null = null;
+
+      function initLenis() {
+        // Destroy previous instance before creating a new one
+        if (lenis) {
+          lenis.destroy();
+          if (rafId !== null) cancelAnimationFrame(rafId);
+        }
+
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+        });
+
+        function raf(time: number) {
+          lenis!.raf(time);
+          rafId = requestAnimationFrame(raf);
+        }
+        rafId = requestAnimationFrame(raf);
       }
-      requestAnimationFrame(raf);
+
+      document.addEventListener('astro:page-load', initLenis);
     </script>
   </body>
 </html>
