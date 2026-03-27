@@ -1,0 +1,224 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import Badge from '../../components/ui/Badge.astro';
+import { stack, stackCategories } from '../../data/stack';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('es');
+
+const stats = [
+  { value: t('stack.stat.years.value'), label: t('stack.stat.years.label') },
+  { value: t('stack.stat.technologies.value'), label: t('stack.stat.technologies.label') },
+  { value: t('stack.stat.domains.value'), label: t('stack.stat.domains.label') },
+  { value: t('stack.stat.coffee.value'), label: t('stack.stat.coffee.label') },
+];
+
+// Group stack items by category in order, using Spanish labels
+const grouped = stackCategories.map((cat) => ({
+  label: cat.labelEs,
+  items: stack.filter((item) => item.category === cat.key),
+}));
+---
+
+<Layout title={t('stack.title')}>
+  <div class="px-8 md:px-12 py-16 max-w-6xl">
+
+    <!-- Page Header -->
+    <div class="mb-14" id="stack-header">
+      <Badge variant="tag" class="mb-5">
+        {t('stack.badge')}
+      </Badge>
+
+      <h1
+        class="font-sans font-bold leading-none mb-4"
+        style="font-size: clamp(2.4rem, 5vw, 3.5rem); letter-spacing: -0.03em;"
+      >
+        <span style="color: var(--color-bright);">Stack:</span>
+        <span style="color: var(--color-accent);" class="teal-glow-text"> Mis Herramientas</span>
+      </h1>
+
+      <p class="text-base max-w-2xl" style="color: var(--color-secondary);">
+        {t('stack.subtitle')}
+      </p>
+
+      <!-- Accent line -->
+      <div class="mt-5 flex items-center gap-3">
+        <div class="h-px w-12 rounded-full" style="background: var(--color-accent); box-shadow: 0 0 8px rgba(71,180,204,0.5);"></div>
+        <div class="h-px w-4 rounded-full" style="background: rgba(71,180,204,0.3);"></div>
+        <div class="h-px w-2 rounded-full" style="background: rgba(71,180,204,0.15);"></div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16" id="stack-stats">
+      {stats.map((stat, i) => (
+        <div
+          class="stat-card rounded-2xl p-5 text-center"
+          style="background: var(--color-bg-card); border: 1px solid rgba(255,255,255,0.06);"
+          data-stat-index={i}
+        >
+          <div
+            class="stat-value font-sans font-bold leading-none mb-1"
+            style="font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--color-accent); letter-spacing: -0.03em;"
+          >
+            {stat.value}
+          </div>
+          <div class="text-xs font-semibold font-sans uppercase tracking-widest" style="color: var(--color-secondary);">
+            {stat.label}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Tech Categories -->
+    <div class="space-y-14" id="stack-categories">
+      {grouped.map((group, gi) => (
+        <div class="stack-category-group" data-category-index={gi}>
+
+          <!-- Category heading -->
+          <div class="category-label flex items-center gap-3 mb-6">
+            <span
+              class="text-xs font-bold font-sans uppercase tracking-widest"
+              style="color: var(--color-accent);"
+            >
+              {group.label}
+            </span>
+            <div class="h-px flex-1" style="background: rgba(71,180,204,0.12);"></div>
+          </div>
+
+          <!-- Tech Cards Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {group.items.map((tech) => {
+              const bgColor = tech.color + '18';
+              const borderColor = tech.color + '30';
+              return (
+                <div
+                  class="tech-card group rounded-xl p-4 flex flex-col gap-3 cursor-default"
+                  style={`background: var(--color-bg-card); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;`}
+                  data-color={tech.color}
+                >
+                  <!-- Icon area -->
+                  <div
+                    class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={`background: ${bgColor}; border: 1px solid ${borderColor};`}
+                  >
+                    <span
+                      class="text-[10px] font-bold font-sans leading-none"
+                      style={`color: ${tech.color}; letter-spacing: 0.02em;`}
+                    >
+                      {tech.abbr}
+                    </span>
+                  </div>
+
+                  <!-- Name + description -->
+                  <div>
+                    <p class="text-sm font-semibold font-sans leading-tight mb-1" style="color: var(--color-bright);">
+                      {tech.name}
+                    </p>
+                    <p class="text-[11px] leading-snug" style="color: var(--color-secondary);">
+                      {tech.descriptionEs}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  .tech-card:hover {
+    transform: translateY(-4px);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Header fade in
+  gsap.fromTo(
+    '#stack-header',
+    { opacity: 0, y: 24 },
+    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.1 }
+  );
+
+  // Stats cards stagger in
+  gsap.fromTo(
+    '#stack-stats .stat-card',
+    { opacity: 0, y: 20, scale: 0.96 },
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'power2.out',
+      delay: 0.3,
+    }
+  );
+
+  // Category groups: label slides in from left, cards stagger up
+  document.querySelectorAll('.stack-category-group').forEach((group) => {
+    const label = group.querySelector('.category-label');
+    const cards = group.querySelectorAll('.tech-card');
+
+    if (label) {
+      gsap.fromTo(
+        label,
+        { opacity: 0, x: -20 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: group,
+            start: 'top 82%',
+          },
+        }
+      );
+    }
+
+    if (cards.length) {
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.45,
+          stagger: 0.055,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: group,
+            start: 'top 80%',
+          },
+        }
+      );
+    }
+  });
+
+  // Tech card hover glow — dynamic color from data-color
+  document.querySelectorAll<HTMLElement>('.tech-card').forEach((card) => {
+    const color = card.dataset.color ?? '#47B4CC';
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    card.addEventListener('mouseenter', () => {
+      card.style.borderColor = `rgba(${r},${g},${b},0.45)`;
+      card.style.boxShadow = `0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(${r},${g},${b},0.2)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.borderColor = 'rgba(255,255,255,0.06)';
+      card.style.boxShadow = 'none';
+    });
+  });
+</script>

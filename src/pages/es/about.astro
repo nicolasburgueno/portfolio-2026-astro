@@ -1,0 +1,455 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import { useTranslations, getLangFromUrl } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const experience = [
+  {
+    role: 'Ingeniero de Automatización e Integración',
+    company: 'Contractor Marketing Pros (CMP)',
+    location: 'Remoto (Miami, FL)',
+    period: 'Jun 2025 – Sep 2025',
+    bullets: [
+      'Construí integraciones de API entre 5+ plataformas (GHL, JobNimbus, JobProgress) usando Node.js y webhooks',
+      'Creé 10+ flujos automatizados con Make, Zapier y n8n → 60% de reducción en tareas manuales',
+      'Automaticé pipelines de datos y reportes reemplazando planillas con dashboards en tiempo real en Google Sheets',
+    ],
+    tags: ['Node.js', 'Make', 'n8n', 'Zapier', 'Webhooks'],
+  },
+  {
+    role: 'Desarrollador Backend / Full Stack',
+    company: 'Measure Me',
+    location: 'Remoto',
+    period: 'Jun 2024 – May 2025',
+    bullets: [
+      'Construí el backend completo desde cero con NestJS, Prisma y PostgreSQL para una plataforma móvil de seguimiento agrícola',
+      'Implementé autenticación JWT + RBAC asegurando endpoints de API para 3 roles de usuario',
+      'Desarrollé API RESTful consumida por una app React Native Expo, gestionando más de 1.000 registros de seguimiento animal',
+      'Construí el MVP inicial (Mar–Abr 2024) con Python, Flask, SQLAlchemy y React — entregado en 2 meses',
+    ],
+    tags: ['NestJS', 'Prisma', 'PostgreSQL', 'React Native', 'Python', 'Flask'],
+  },
+  {
+    role: 'Mentor & SCRUM Master',
+    company: 'Henry Bootcamp',
+    location: 'Remoto (Argentina)',
+    period: 'Abr 2022 – Jun 2025',
+    bullets: [
+      'Lideré más de 50 equipos de desarrollo con SCRUM: planificación de sprints, dailies y retrospectivas',
+      'Dicté 20+ sesiones intensivas de una semana sobre SPAs, REST APIs y desarrollo full-stack',
+      'Mentoreé a más de 200 desarrolladores junior evaluando su desempeño con tests unitarios en Jest',
+    ],
+    tags: ['SCRUM', 'Jest', 'Node.js', 'React'],
+  },
+  {
+    role: 'Asistente de Enseñanza (Full Stack)',
+    company: 'Henry Bootcamp',
+    location: 'Remoto (Argentina)',
+    period: 'Nov 2021 – Ene 2022',
+    bullets: [
+      'Coordiné grupos de estudiantes y promoví prácticas de Pair Programming',
+    ],
+    tags: ['JavaScript', 'React', 'Node.js'],
+  },
+  {
+    role: 'Operador',
+    company: 'Ricoh Argentina S.A.',
+    location: 'Buenos Aires, Argentina',
+    period: 'Ago 2017 – Nov 2021',
+    bullets: [
+      'Operé máquinas de impresión industrial y gestioné sistemas de archivos en servidor en un entorno corporativo',
+    ],
+    tags: [],
+  },
+];
+
+const education = [
+  {
+    degree: 'Desarrollador Web Full Stack',
+    institution: 'Henry Bootcamp',
+    period: '2022',
+    description: '800 horas intensivas de teoría y práctica cubriendo desarrollo full-stack, REST APIs, bases de datos y trabajo colaborativo.',
+  },
+  {
+    degree: 'Tecnicatura en Programación Informática',
+    institution: 'Universidad Nacional de San Martín (UNSAM)',
+    period: '2015',
+    description: 'Fundamentos en programación, algoritmos, estructuras de datos y sistemas de software.',
+  },
+];
+
+const certifications = [
+  { name: 'Claude 101', issuer: 'Anthropic', year: '2026' },
+  { name: 'Claude Code in Action', issuer: 'Anthropic', year: '2026' },
+  { name: 'Make Intermediate', issuer: 'Make Academy', year: '2024' },
+  { name: 'Make Basic', issuer: 'Make Academy', year: '2024' },
+  { name: 'Java Fundamentals', issuer: 'EducacionIT', year: '2020' },
+];
+
+const values = [
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+    titleKey: 'about.values.concepts.title',
+    descKey: 'about.values.concepts.desc',
+  },
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 0 1 17.9 0"/></svg>`,
+    titleKey: 'about.values.ai.title',
+    descKey: 'about.values.ai.desc',
+  },
+  {
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`,
+    titleKey: 'about.values.foundations.title',
+    descKey: 'about.values.foundations.desc',
+  },
+];
+---
+
+<Layout title={t('nav.about')}>
+  <div class="px-8 py-16 max-w-6xl w-full">
+
+    <!-- ─── Page Header ─── -->
+    <div class="mb-16" data-animate="fade-up">
+      <div class="mb-4">
+        <Badge variant="tag">{t('about.badge')}</Badge>
+      </div>
+      <SectionTitle
+        title={t('about.title')}
+        subtitle={t('about.intro')}
+      />
+    </div>
+
+    <!-- ─── Bio + Photo ─── -->
+    <section class="mb-20">
+      <div class="flex flex-col md:flex-row gap-10 items-start">
+
+        <!-- Bio text -->
+        <div class="flex-1" data-animate="fade-up">
+          <p class="text-base leading-relaxed mb-6" style="color: var(--color-text);">
+            {t('about.bio.text')}
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <Button href="/es/projects" variant="primary" size="md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              Ver proyectos
+            </Button>
+            <Button href="/es/contact" variant="ghost" size="md">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Contactame
+            </Button>
+          </div>
+        </div>
+
+        <!-- Avatar photo -->
+        <div class="shrink-0" data-animate="fade-up">
+          <div class="avatar-wrap">
+            <img src="/avatar.jpg" alt="Nicolas Burgueño" class="avatar-img" />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Experience Timeline ─── -->
+    <section class="mb-20">
+      <div data-animate="fade-up" class="mb-10">
+        <SectionTitle title={t('about.experience.title')} />
+      </div>
+
+      <div class="timeline">
+        {experience.map((item, i) => (
+          <div class="timeline-entry" data-timeline-item>
+            <!-- Year dot -->
+            <div class="timeline-left">
+              <div class="timeline-dot"></div>
+            </div>
+
+            <!-- Content card -->
+            <div class="timeline-card card-hover">
+              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-3">
+                <div>
+                  <h3 class="font-sans font-bold text-base" style="color: var(--color-bright);">{item.role}</h3>
+                  <p class="text-sm font-medium" style="color: var(--color-accent);">{item.company}</p>
+                  {item.location && <p class="text-xs mt-0.5" style="color: var(--color-secondary);">{item.location}</p>}
+                </div>
+                <span class="timeline-period">{item.period}</span>
+              </div>
+
+              <ul class="mb-4 space-y-1.5">
+                {item.bullets.map(bullet => (
+                  <li class="flex gap-2 text-sm" style="color: var(--color-text);">
+                    <span class="mt-1.5 shrink-0 w-1 h-1 rounded-full" style="background: var(--color-accent);"></span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+
+              {item.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5">
+                  {item.tags.map(tag => (
+                    <Badge variant="tag">{tag}</Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ─── Education ─── -->
+    <section class="mb-20">
+      <div data-animate="fade-up" class="mb-10">
+        <SectionTitle title={t('about.education.title')} />
+      </div>
+
+      <div class="grid gap-4" data-animate="fade-up">
+        {education.map(edu => (
+          <div class="edu-card card-hover">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-2">
+              <div>
+                <h3 class="font-sans font-bold text-base" style="color: var(--color-bright);">{edu.degree}</h3>
+                <p class="text-sm" style="color: var(--color-accent);">{edu.institution}</p>
+              </div>
+              <span class="timeline-period">{edu.period}</span>
+            </div>
+            <p class="text-sm" style="color: var(--color-secondary);">{edu.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ─── Certifications ─── -->
+    <section class="mb-20">
+      <div data-animate="fade-up" class="mb-8">
+        <SectionTitle title="Certificaciones: Aprendizaje Continuo" />
+      </div>
+      <div class="flex flex-wrap gap-3" data-animate="fade-up">
+        {certifications.map(cert => (
+          <div class="cert-card">
+            <span class="cert-name">{cert.name}</span>
+            <span class="cert-meta">{cert.issuer} · {cert.year}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ─── Values ─── -->
+    <section class="mb-12">
+      <div data-animate="fade-up" class="mb-10">
+        <SectionTitle title={t('about.values.title')} />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {values.map(value => (
+          <div class="value-card card-hover" data-animate="fade-up">
+            <div class="value-icon-wrap mb-4">
+              <Fragment set:html={value.icon} />
+            </div>
+            <h3 class="font-sans font-bold text-sm mb-2" style="color: var(--color-bright);">{t(value.titleKey as any)}</h3>
+            <p class="text-xs leading-relaxed" style="color: var(--color-secondary);">{t(value.descKey as any)}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</Layout>
+
+<style>
+  /* ── Avatar Photo ── */
+  .avatar-wrap {
+    width: 280px;
+    height: 320px;
+    border-radius: 12px;
+    border: 2px solid rgba(71, 180, 204, 0.5);
+    box-shadow: 0 0 32px rgba(71, 180, 204, 0.2), 0 0 64px rgba(71,180,204,0.08);
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Certifications ── */
+  .cert-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(71, 180, 204, 0.15);
+    background: rgba(71, 180, 204, 0.04);
+  }
+
+  .cert-name {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-bright);
+  }
+
+  .cert-meta {
+    font-size: 0.7rem;
+    color: var(--color-secondary);
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      rgba(71,180,204,0.7) 0%,
+      rgba(71,180,204,0.3) 60%,
+      rgba(71,180,204,0.05) 100%
+    );
+    border-radius: 2px;
+  }
+
+  .timeline-entry {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+
+  .timeline-entry.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .timeline-left {
+    position: absolute;
+    left: -28px;
+    top: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .timeline-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 2px solid var(--color-accent);
+    box-shadow: 0 0 10px rgba(71,180,204,0.5);
+    flex-shrink: 0;
+  }
+
+  .timeline-card {
+    flex: 1;
+    padding: 20px 24px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(17,24,39,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .timeline-period {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    background: rgba(71,180,204,0.06);
+    border: 1px solid rgba(71,180,204,0.15);
+    padding: 3px 10px;
+    border-radius: 99px;
+    height: fit-content;
+    margin-top: 2px;
+  }
+
+  /* ── Education card ── */
+  .edu-card {
+    padding: 20px 24px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(17,24,39,0.6);
+  }
+
+  /* ── Values ── */
+  .value-card {
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(17,24,39,0.5);
+  }
+
+  .value-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(71,180,204,0.08);
+    border: 1px solid rgba(71,180,204,0.18);
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  // Timeline scroll reveal with GSAP ScrollTrigger
+  document.addEventListener('DOMContentLoaded', () => {
+    const entries = document.querySelectorAll<HTMLElement>('[data-timeline-item]');
+
+    entries.forEach((entry, i) => {
+      if ((window as any).gsap && (window as any).ScrollTrigger) {
+        (window as any).gsap.fromTo(
+          entry,
+          { opacity: 0, x: -32 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.55,
+            ease: 'power3.out',
+            delay: i * 0.08,
+            scrollTrigger: {
+              trigger: entry,
+              start: 'top 88%',
+            },
+          }
+        );
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                setTimeout(() => {
+                  (e.target as HTMLElement).style.transition = `opacity 0.55s ease ${i * 0.08}s, transform 0.55s ease ${i * 0.08}s`;
+                  (e.target as HTMLElement).classList.add('is-visible');
+                }, 0);
+                observer.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        observer.observe(entry);
+      }
+    });
+  });
+</script>

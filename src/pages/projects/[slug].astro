@@ -1,0 +1,218 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import ImageGallery from '../../components/islands/ImageGallery';
+import { projects } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+
+// Stack grouping — rough heuristic
+const frontendKeywords = ['React', 'Redux', 'Styled Components', 'React Native', 'Next.js', 'Tailwind CSS', 'Ionic'];
+const backendKeywords = ['Node.js', 'Express', 'NestJS', 'JWT', 'Bcrypt', 'Mercado Pago', 'Apollo Client'];
+const dbKeywords = ['PostgreSQL', 'Sequelize', 'Supabase', 'Prisma'];
+const langKeywords = ['TypeScript', 'JavaScript', 'GraphQL'];
+
+const groupStack = (stack: readonly string[]) => {
+  const groups: Record<string, string[]> = {
+    Frontend: [],
+    Backend: [],
+    Database: [],
+    Language: [],
+    Other: [],
+  };
+  stack.forEach((tech) => {
+    if (frontendKeywords.includes(tech)) groups.Frontend.push(tech);
+    else if (backendKeywords.includes(tech)) groups.Backend.push(tech);
+    else if (dbKeywords.includes(tech)) groups.Database.push(tech);
+    else if (langKeywords.includes(tech)) groups.Language.push(tech);
+    else groups.Other.push(tech);
+  });
+  return groups;
+};
+
+const stackGroups = groupStack(project.stack);
+---
+
+<Layout title={project.title} description={project.shortDesc}>
+  <div class="px-8 md:px-12 py-16 max-w-4xl">
+
+    <!-- Back link -->
+    <div class="mb-10">
+      <Button href="/projects" variant="ghost" size="sm">
+        ← Back to Projects
+      </Button>
+    </div>
+
+    <!-- Header -->
+    <div class="mb-8" data-animate="fade-up">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <Badge variant="category">{project.category}</Badge>
+        {project.featured && (
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold font-sans uppercase tracking-wider"
+            style="background: rgba(71,180,204,0.15); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.35);"
+          >
+            <span class="w-1.5 h-1.5 rounded-full" style="background: var(--color-accent);"></span>
+            Featured
+          </span>
+        )}
+      </div>
+
+      <h1
+        class="font-sans font-bold mb-3"
+        style="font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.03em; color: var(--color-bright); line-height: 1.1;"
+      >
+        {project.title}
+      </h1>
+
+      <p class="text-lg leading-relaxed max-w-2xl" style="color: var(--color-secondary);">
+        {project.shortDesc}
+      </p>
+    </div>
+
+    <!-- Tag row + Links -->
+    <div class="flex flex-wrap items-center gap-3 mb-10 pb-10" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+      <div class="flex flex-wrap gap-2">
+        {project.tags.map((tag) => <Badge variant="tag">{tag}</Badge>)}
+      </div>
+      <div class="flex flex-wrap gap-2 ml-auto">
+        {project.github && (
+          <Button href={project.github} variant="secondary" size="sm" external>
+            GitHub ↗
+          </Button>
+        )}
+        {'githubBackend' in project && project.githubBackend && (
+          <Button href={project.githubBackend as string} variant="secondary" size="sm" external>
+            Backend ↗
+          </Button>
+        )}
+        {project.live && (
+          <Button href={project.live} variant="primary" size="sm" external>
+            Live Demo ↗
+          </Button>
+        )}
+      </div>
+    </div>
+
+    <!-- Image gallery -->
+    <div class="mb-12" data-animate="fade-up">
+      <ImageGallery client:load images={project.images} title={project.title} />
+    </div>
+
+    <!-- Divider -->
+    <div class="mb-12" style="height: 1px; background: linear-gradient(to right, rgba(71,180,204,0.3), rgba(71,180,204,0.05), transparent);"></div>
+
+    <!-- About section -->
+    <section class="mb-12" data-animate="fade-up">
+      <h2
+        class="font-sans font-bold mb-4"
+        style="font-size: 1.5rem; color: var(--color-bright); letter-spacing: -0.02em;"
+      >
+        About the Project
+      </h2>
+      <p class="text-base leading-relaxed" style="color: var(--color-secondary);">
+        {project.intro}
+      </p>
+    </section>
+
+    <!-- Features -->
+    <section class="mb-12" data-animate="fade-up">
+      <h2
+        class="font-sans font-bold mb-6"
+        style="font-size: 1.5rem; color: var(--color-bright); letter-spacing: -0.02em;"
+      >
+        What you can do
+      </h2>
+
+      <div class={`grid gap-6 ${project.appFeatures ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
+        <!-- Web features -->
+        <div
+          class="rounded-2xl p-6"
+          style="background: var(--color-bg-darker); border: 1px solid rgba(255,255,255,0.06);"
+        >
+          <div class="flex items-center gap-2 mb-4">
+            <span style="color: var(--color-accent); font-size: 1rem;">◈</span>
+            <h3 class="font-sans font-semibold text-sm" style="color: var(--color-accent);">
+              {project.appFeatures ? 'Web App' : 'Features'}
+            </h3>
+          </div>
+          <ul class="space-y-2.5">
+            {project.webFeatures.map((feat) => (
+              <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-secondary);">
+                <span class="mt-1 flex-shrink-0 w-1 h-1 rounded-full" style="background: var(--color-accent); margin-top: 6px;"></span>
+                {feat}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- App features (if they exist) -->
+        {project.appFeatures && (
+          <div
+            class="rounded-2xl p-6"
+            style="background: var(--color-bg-darker); border: 1px solid rgba(255,255,255,0.06);"
+          >
+            <div class="flex items-center gap-2 mb-4">
+              <span style="color: var(--color-accent); font-size: 1rem;">◈</span>
+              <h3 class="font-sans font-semibold text-sm" style="color: var(--color-accent);">
+                Mobile App
+              </h3>
+            </div>
+            <ul class="space-y-2.5">
+              {project.appFeatures.map((feat) => (
+                <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-secondary);">
+                  <span class="mt-1 flex-shrink-0 w-1 h-1 rounded-full" style="background: var(--color-accent); margin-top: 6px;"></span>
+                  {feat}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Technologies used -->
+    <section data-animate="fade-up">
+      <h2
+        class="font-sans font-bold mb-6"
+        style="font-size: 1.5rem; color: var(--color-bright); letter-spacing: -0.02em;"
+      >
+        Technologies Used
+      </h2>
+
+      <div class="space-y-4">
+        {Object.entries(stackGroups).map(([group, techs]) =>
+          techs.length > 0 ? (
+            <div class="flex flex-wrap items-start gap-3">
+              <span
+                class="flex-shrink-0 w-20 text-xs font-sans font-semibold uppercase tracking-wider pt-1"
+                style="color: rgba(71,180,204,0.5);"
+              >
+                {group}
+              </span>
+              <div class="flex flex-wrap gap-2">
+                {techs.map((tech) => (
+                  <span
+                    class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium font-sans"
+                    style="background: rgba(255,255,255,0.05); color: var(--color-text); border: 1px solid rgba(255,255,255,0.1);"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null
+        )}
+      </div>
+    </section>
+
+  </div>
+</Layout>

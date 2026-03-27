@@ -1,0 +1,166 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../components/layout/Layout.astro';
+import SectionTitle from '../../../components/ui/SectionTitle.astro';
+import Badge from '../../../components/ui/Badge.astro';
+import { useTranslations, getLangFromUrl } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('es-AR', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+const gradients = [
+  'linear-gradient(135deg, #0c1a2e 0%, #0f2744 50%, #0a3d52 100%)',
+  'linear-gradient(135deg, #0c1a1a 0%, #0f3030 50%, #0a4040 100%)',
+  'linear-gradient(135deg, #1a0c2e 0%, #2a0f44 50%, #1a0a52 100%)',
+  'linear-gradient(135deg, #1a1a0c 0%, #2e2e0f 50%, #3a3a0a 100%)',
+];
+---
+
+<Layout title={t('blog.badge')}>
+  <div class="px-8 md:px-12 py-16">
+    <div class="mb-2">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold font-sans mb-6"
+        style="background: rgba(71,180,204,0.1); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.3);">
+        {t('blog.badge')}
+      </span>
+    </div>
+
+    <SectionTitle
+      title={t('blog.title')}
+      subtitle={t('blog.subtitle')}
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl" id="blog-grid">
+      {posts.map((post, i) => (
+        <article
+          class="blog-card group rounded-2xl overflow-hidden border border-white/5 card-hover cursor-pointer"
+          style="background: var(--color-bg-card);"
+          data-href={`/es/blog/${post.id}`}
+          data-animate="fade-up"
+        >
+          <!-- Cover / Gradient placeholder -->
+          <div
+            class="relative h-44 overflow-hidden"
+            style={post.data.cover
+              ? `background: url('${post.data.cover}') center/cover no-repeat;`
+              : gradients[i % gradients.length]}
+          >
+            {!post.data.cover && (
+              <span
+                class="absolute inset-0 flex items-center justify-center font-sans font-bold uppercase tracking-widest select-none"
+                style="font-size: clamp(1.5rem, 4vw, 2.5rem); color: rgba(71,180,204,0.12); letter-spacing: 0.15em;"
+              >
+                {post.data.tags[0] ?? 'Blog'}
+              </span>
+            )}
+
+            <div class="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
+              {post.data.tags.slice(0, 3).map((tag) => (
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold font-sans"
+                  style="background: rgba(12,18,25,0.8); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.3); backdrop-filter: blur(4px);"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {post.data.originalUrl && (
+              <div class="absolute top-3 right-3">
+                <a
+                  href={post.data.originalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-semibold font-sans transition-opacity hover:opacity-80"
+                  style="background: rgba(12,18,25,0.85); color: var(--color-secondary); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(4px);"
+                  onclick="event.stopPropagation()"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+                  Medium
+                </a>
+              </div>
+            )}
+          </div>
+
+          <div class="p-5">
+            <div class="flex items-center gap-2 mb-3 text-xs" style="color: var(--color-secondary);">
+              <time>{formatDate(post.data.date)}</time>
+              {post.data.readingTime && (
+                <>
+                  <span style="color: rgba(71,180,204,0.3);">·</span>
+                  <span>{post.data.readingTime} {t('blog.minRead')}</span>
+                </>
+              )}
+            </div>
+
+            <h2
+              class="font-sans font-bold mb-2 line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors duration-200"
+              style="font-size: 1.1rem; color: var(--color-bright); line-height: 1.4;"
+            >
+              {post.data.title}
+            </h2>
+
+            <p
+              class="text-sm mb-4 line-clamp-3"
+              style="color: var(--color-secondary); line-height: 1.6;"
+            >
+              {post.data.description}
+            </p>
+
+            <a
+              href={`/es/blog/${post.id}`}
+              class="inline-flex items-center gap-1.5 text-sm font-semibold font-sans transition-all duration-200 group-hover:gap-2.5"
+              style="color: var(--color-accent);"
+            >
+              {t('blog.readMore')}
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <p class="text-sm mt-8" style="color: var(--color-secondary);">No hay posts aún. Volvé pronto.</p>
+    )}
+  </div>
+</Layout>
+
+<script>
+  document.querySelectorAll('.blog-card[data-href]').forEach((card) => {
+    card.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('a')) return;
+      const href = (card as HTMLElement).dataset.href;
+      if (href) window.location.href = href;
+    });
+  });
+
+  const gsap = (window as any).gsap;
+  const ScrollTrigger = (window as any).ScrollTrigger;
+  if (gsap && ScrollTrigger) {
+    const cards = document.querySelectorAll('.blog-card');
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        stagger: 0.12,
+        scrollTrigger: {
+          trigger: '#blog-grid',
+          start: 'top 85%',
+        },
+      }
+    );
+  }
+</script>

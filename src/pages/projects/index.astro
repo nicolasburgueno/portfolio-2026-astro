@@ -1,0 +1,154 @@
+---
+import Layout from '../../components/layout/Layout.astro';
+import SectionTitle from '../../components/ui/SectionTitle.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import { projects } from '../../data/projects';
+
+const categories = ['All', 'Full Stack', 'Mobile', 'Full Stack + Mobile'];
+---
+
+<Layout title="Projects">
+  <div class="px-4 md:px-8 lg:px-12 py-10 md:py-16">
+    <!-- Header -->
+    <div class="mb-4">
+      <Badge variant="tag">Projects</Badge>
+    </div>
+    <SectionTitle
+      title="Showcasing: My Work"
+      subtitle="Systems I've built, problems I've solved — real-world apps from concept to production."
+    />
+
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap gap-2 mb-10" id="filter-tabs">
+      {categories.map((cat) => (
+        <button
+          class="filter-btn font-sans text-xs font-medium px-4 py-2 rounded-lg transition-all duration-200"
+          data-filter={cat}
+          style={cat === 'All'
+            ? 'background: rgba(71,180,204,0.15); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.4);'
+            : 'background: rgba(255,255,255,0.04); color: var(--color-secondary); border: 1px solid rgba(255,255,255,0.08);'}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <!-- Projects grid -->
+    <div class="grid gap-6 md:grid-cols-2" id="projects-grid">
+      {projects.map((project) => (
+        <article
+          class="project-card card-hover group rounded-2xl overflow-hidden"
+          data-category={project.category}
+          style="background: var(--color-bg-darker); border: 1px solid rgba(255,255,255,0.06);"
+        >
+          <!-- Image area -->
+          <div
+            class="relative overflow-hidden"
+            style="aspect-ratio: 16/9;"
+          >
+            <img
+              src={project.images[0]}
+              alt={project.title}
+              class="project-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <!-- Placeholder shown when image fails -->
+            <div
+              class="absolute inset-0 items-center justify-center"
+              style="display: none; background: linear-gradient(135deg, #0c1219 0%, #111827 60%, #0F151F 100%);"
+            >
+              <span
+                class="font-sans font-bold text-center px-6 select-none"
+                style="font-size: clamp(2rem, 4vw, 3.5rem); color: rgba(71,180,204,0.1); letter-spacing: -0.04em;"
+              >
+                {project.title}
+              </span>
+            </div>
+
+            <!-- Category badge top-right -->
+            <div class="absolute top-3 right-3">
+              <Badge variant="category">{project.category}</Badge>
+            </div>
+
+            <!-- Featured badge top-left -->
+            {project.featured && (
+              <div class="absolute top-3 left-3">
+                <span
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold font-sans uppercase tracking-wider"
+                  style="background: rgba(71,180,204,0.2); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.4);"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full" style="background: var(--color-accent);"></span>
+                  Featured
+                </span>
+              </div>
+            )}
+
+            <!-- Gradient overlay at bottom -->
+            <div
+              class="absolute inset-x-0 bottom-0 h-16"
+              style="background: linear-gradient(to top, var(--color-bg-darker), transparent);"
+            ></div>
+          </div>
+
+          <!-- Card body -->
+          <div class="p-6">
+            <h2
+              class="text-lg font-bold font-sans mb-2 transition-colors duration-200 group-hover:text-[var(--color-accent)]"
+              style="color: var(--color-bright);"
+            >
+              {project.title}
+            </h2>
+            <p class="text-sm mb-4 leading-relaxed" style="color: var(--color-secondary);">
+              {project.shortDesc}
+            </p>
+
+            <!-- Tag chips -->
+            <div class="flex flex-wrap gap-1.5 mb-5">
+              {project.tags.map((tag) => (
+                <Badge variant="tag">{tag}</Badge>
+              ))}
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-2">
+              {project.github && (
+                <Button href={project.github} variant="secondary" size="sm" external>
+                  GitHub ↗
+                </Button>
+              )}
+              <Button href={`/projects/${project.id}`} variant="ghost" size="sm">
+                Case study →
+              </Button>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.project-card');
+
+  const activeStyle = 'background: rgba(71,180,204,0.15); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.4);';
+  const inactiveStyle = 'background: rgba(255,255,255,0.04); color: var(--color-secondary); border: 1px solid rgba(255,255,255,0.08);';
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter ?? 'All';
+
+      // Update button styles
+      buttons.forEach((b) => (b.style.cssText = inactiveStyle));
+      btn.style.cssText = activeStyle;
+
+      // Show/hide cards
+      cards.forEach((card) => {
+        const cat = card.dataset.category ?? '';
+        const show = filter === 'All' || cat === filter || (filter === 'Full Stack' && cat.startsWith('Full Stack'));
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>
