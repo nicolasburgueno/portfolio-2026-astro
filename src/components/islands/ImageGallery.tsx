@@ -65,6 +65,8 @@ export default function ImageGallery({ images, title }: Props) {
             alt={`${title} screenshot ${activeIndex + 1}`}
             onError={() => handleError(activeIndex)}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
             style={{ display: 'block' }}
           />
         )}
@@ -157,6 +159,8 @@ export default function ImageGallery({ images, title }: Props) {
                     alt={`Thumbnail ${i + 1}`}
                     onError={() => handleError(i)}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 )}
               </button>

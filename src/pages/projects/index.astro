@@ -51,6 +51,8 @@ const categories = ['All', 'Full Stack', 'Mobile', 'Full Stack + Mobile'];
               src={project.images[0]}
               alt={project.title}
               class="project-img w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
             />
             <!-- Placeholder shown when image fails -->
