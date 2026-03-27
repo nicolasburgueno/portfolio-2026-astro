@@ -141,84 +141,90 @@ const grouped = stackCategories.map((cat) => ({
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
 
-  // Header fade in
-  gsap.fromTo(
-    '#stack-header',
-    { opacity: 0, y: 24 },
-    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.1 }
-  );
+  function initStack() {
+    ScrollTrigger.getAll().forEach((st) => st.kill());
 
-  // Stats cards stagger in
-  gsap.fromTo(
-    '#stack-stats .stat-card',
-    { opacity: 0, y: 20, scale: 0.96 },
-    {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.5,
-      stagger: 0.08,
-      ease: 'power2.out',
-      delay: 0.3,
-    }
-  );
+    // Header fade in
+    gsap.fromTo(
+      '#stack-header',
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.1 }
+    );
 
-  // Category groups: label slides in from left, cards stagger up
-  document.querySelectorAll('.stack-category-group').forEach((group) => {
-    const label = group.querySelector('.category-label');
-    const cards = group.querySelectorAll('.tech-card');
+    // Stats cards stagger in
+    gsap.fromTo(
+      '#stack-stats .stat-card',
+      { opacity: 0, y: 20, scale: 0.96 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: 'power2.out',
+        delay: 0.3,
+      }
+    );
 
-    if (label) {
-      gsap.fromTo(
-        label,
-        { opacity: 0, x: -20 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: group,
-            start: 'top 82%',
-          },
-        }
-      );
-    }
+    // Category groups: label slides in from left, cards stagger up
+    document.querySelectorAll('.stack-category-group').forEach((group) => {
+      const label = group.querySelector('.category-label');
+      const cards = group.querySelectorAll('.tech-card');
 
-    if (cards.length) {
-      gsap.fromTo(
-        cards,
-        { opacity: 0, y: 24 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
-          stagger: 0.055,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: group,
-            start: 'top 80%',
-          },
-        }
-      );
-    }
-  });
+      if (label) {
+        gsap.fromTo(
+          label,
+          { opacity: 0, x: -20 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.5,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: group,
+              start: 'top 82%',
+            },
+          }
+        );
+      }
 
-  // Tech card hover glow — dynamic color from data-color
-  document.querySelectorAll<HTMLElement>('.tech-card').forEach((card) => {
-    const color = card.dataset.color ?? '#47B4CC';
-    const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-
-    card.addEventListener('mouseenter', () => {
-      card.style.borderColor = `rgba(${r},${g},${b},0.45)`;
-      card.style.boxShadow = `0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(${r},${g},${b},0.2)`;
+      if (cards.length) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.45,
+            stagger: 0.055,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: group,
+              start: 'top 80%',
+            },
+          }
+        );
+      }
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.borderColor = 'rgba(255,255,255,0.06)';
-      card.style.boxShadow = 'none';
+
+    // Tech card hover glow — dynamic color from data-color
+    document.querySelectorAll<HTMLElement>('.tech-card').forEach((card) => {
+      const color = card.dataset.color ?? '#47B4CC';
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = `rgba(${r},${g},${b},0.45)`;
+        card.style.boxShadow = `0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(${r},${g},${b},0.2)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.borderColor = 'rgba(255,255,255,0.06)';
+        card.style.boxShadow = 'none';
+      });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initStack);
 </script>

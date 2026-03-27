@@ -423,7 +423,7 @@ const values = [
 <script>
   // Timeline scroll reveal with GSAP ScrollTrigger
   // Wait for the global gsap/ScrollTrigger that BaseLayout registers
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const entries = document.querySelectorAll<HTMLElement>('[data-timeline-item]');
 
     entries.forEach((entry, i) => {
