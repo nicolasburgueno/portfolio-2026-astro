@@ -143,31 +143,33 @@ const display = featured.length >= 2 ? featured.slice(0, 3) : projects.slice(0, 
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
 
-  // Scroll reveal for the section
-  gsap.fromTo(
-    '#projects-grid .project-card',
-    { opacity: 0, y: 40 },
-    {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      stagger: 0.15,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: '#projects-section',
-        start: 'top 80%',
-      },
-    }
-  );
+  function initRecentProjects() {
+    gsap.fromTo(
+      '#projects-grid .project-card',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '#projects-section',
+          start: 'top 80%',
+        },
+      }
+    );
 
-  // Card hover: show accent bottom line
-  document.querySelectorAll('.project-card').forEach((card, i) => {
-    const line = document.getElementById(`card-line-${i}`);
-    card.addEventListener('mouseenter', () => {
-      if (line) line.style.opacity = '1';
+    document.querySelectorAll('.project-card').forEach((card, i) => {
+      const line = document.getElementById(`card-line-${i}`);
+      card.addEventListener('mouseenter', () => {
+        if (line) line.style.opacity = '1';
+      });
+      card.addEventListener('mouseleave', () => {
+        if (line) line.style.opacity = '0';
+      });
     });
-    card.addEventListener('mouseleave', () => {
-      if (line) line.style.opacity = '0';
-    });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initRecentProjects);
 </script>

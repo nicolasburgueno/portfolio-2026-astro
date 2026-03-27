@@ -119,53 +119,52 @@ const t = useTranslations(lang);
 <script>
   import { gsap } from 'gsap';
 
-  const tl = gsap.timeline({ delay: 0.1 });
+  function initHero() {
+    const tl = gsap.timeline({ delay: 0.1 });
 
-  // Badge fade in
-  tl.fromTo(
-    '.hero-item:first-child',
-    { opacity: 0, y: 10 },
-    { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
-  );
+    tl.fromTo(
+      '.hero-item:first-child',
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+    );
 
-  // Small label
-  tl.fromTo(
-    '.hero-item',
-    { opacity: 0, y: 20 },
-    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
-    0.1
-  );
+    tl.fromTo(
+      '.hero-item',
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
+      0.1
+    );
 
-  // Word-split animation for the hero title
-  tl.fromTo(
-    '.hero-word',
-    { opacity: 0, y: 40, rotationX: -20 },
-    {
-      opacity: 1,
-      y: 0,
-      rotationX: 0,
-      duration: 0.65,
-      stagger: 0.12,
-      ease: 'power3.out',
-    },
-    0.2
-  );
+    tl.fromTo(
+      '.hero-word',
+      { opacity: 0, y: 40, rotationX: -20 },
+      {
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        duration: 0.65,
+        stagger: 0.12,
+        ease: 'power3.out',
+      },
+      0.2
+    );
 
-  // Description lines cascade
-  tl.fromTo(
-    '#desc-line-1, #desc-line-2, #desc-line-3',
-    { opacity: 0, x: -16 },
-    { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
-    0.6
-  );
+    tl.fromTo(
+      '#desc-line-1, #desc-line-2, #desc-line-3',
+      { opacity: 0, x: -16 },
+      { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
+      0.6
+    );
 
-  // Subtle name glow pulse after entrance
-  gsap.to('#hero-name', {
-    textShadow: '0 0 40px rgba(71,180,204,0.5)',
-    duration: 1.5,
-    repeat: -1,
-    yoyo: true,
-    ease: 'sine.inOut',
-    delay: 1.5,
-  });
+    gsap.to('#hero-name', {
+      textShadow: '0 0 40px rgba(71,180,204,0.5)',
+      duration: 1.5,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: 1.5,
+    });
+  }
+
+  document.addEventListener('astro:page-load', initHero);
 </script>

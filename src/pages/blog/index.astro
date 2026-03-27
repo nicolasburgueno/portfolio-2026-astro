@@ -139,35 +139,33 @@ const gradients = [
 </Layout>
 
 <script>
-  // Make entire card clickable
-  document.querySelectorAll('.blog-card[data-href]').forEach((card) => {
-    card.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('a')) return; // let real links work
-      const href = (card as HTMLElement).dataset.href;
-      if (href) window.location.href = href;
+  function initBlog() {
+    document.querySelectorAll('.blog-card[data-href]').forEach((card) => {
+      card.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('a')) return;
+        const href = (card as HTMLElement).dataset.href;
+        if (href) window.location.href = href;
+      });
     });
-  });
 
-  // GSAP stagger for blog cards
-  const gsap = (window as any).gsap;
-  const ScrollTrigger = (window as any).ScrollTrigger;
-  if (gsap && ScrollTrigger) {
-    const cards = document.querySelectorAll('.blog-card');
-    gsap.fromTo(
-      cards,
-      { opacity: 0, y: 40 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: 'power3.out',
-        stagger: 0.12,
-        scrollTrigger: {
-          trigger: '#blog-grid',
-          start: 'top 85%',
-        },
-      }
-    );
+    const gsap = (window as any).gsap;
+    const ScrollTrigger = (window as any).ScrollTrigger;
+    if (gsap && ScrollTrigger) {
+      gsap.fromTo(
+        document.querySelectorAll('.blog-card'),
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: 'power3.out',
+          stagger: 0.12,
+          scrollTrigger: { trigger: '#blog-grid', start: 'top 85%' },
+        }
+      );
+    }
   }
+
+  document.addEventListener('astro:page-load', initBlog);
 </script>

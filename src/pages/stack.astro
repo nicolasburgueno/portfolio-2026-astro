@@ -142,8 +142,6 @@ const grouped = stackCategories.map((cat) => ({
   gsap.registerPlugin(ScrollTrigger);
 
   function initStack() {
-    ScrollTrigger.getAll().forEach((st) => st.kill());
-
     // Header fade in
     gsap.fromTo(
       '#stack-header',

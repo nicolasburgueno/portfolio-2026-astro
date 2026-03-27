@@ -76,10 +76,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://nicolasb
       (window as any).gsap = gsap;
       (window as any).ScrollTrigger = ScrollTrigger;
 
-      function initAnimations() {
-        // Kill existing ScrollTrigger instances to avoid duplicates
+      // Kill all ScrollTriggers BEFORE the DOM swaps (View Transitions)
+      document.addEventListener('astro:before-swap', () => {
         ScrollTrigger.getAll().forEach((st) => st.kill());
+      });
 
+      function initAnimations() {
         // Global: scroll reveal for data-animate="fade-up" elements
         document.querySelectorAll('[data-animate="fade-up"]').forEach((el) => {
           gsap.fromTo(
@@ -116,7 +118,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://nicolasb
         });
       }
 
-      // Run on first load and after every View Transition
       document.addEventListener('astro:page-load', initAnimations);
     </script>
 

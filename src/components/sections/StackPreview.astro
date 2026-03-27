@@ -115,19 +115,23 @@ const grouped = groupOrder.map((cat) => ({
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   gsap.registerPlugin(ScrollTrigger);
 
-  gsap.fromTo(
-    '#stack-groups .stack-group',
-    { opacity: 0, x: -20 },
-    {
-      opacity: 1,
-      x: 0,
-      duration: 0.5,
-      stagger: 0.1,
-      ease: 'power2.out',
-      scrollTrigger: {
-        trigger: '#stack-section',
-        start: 'top 80%',
-      },
-    }
-  );
+  function initStackPreview() {
+    gsap.fromTo(
+      '#stack-groups .stack-group',
+      { opacity: 0, x: -20 },
+      {
+        opacity: 1,
+        x: 0,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#stack-section',
+          start: 'top 80%',
+        },
+      }
+    );
+  }
+
+  document.addEventListener('astro:page-load', initStackPreview);
 </script>
