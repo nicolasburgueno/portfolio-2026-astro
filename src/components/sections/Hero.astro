@@ -1,0 +1,171 @@
+---
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+import { siteConfig } from '../../data/config';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section
+  class="relative min-h-[92vh] flex flex-col justify-center px-5 md:px-14 py-16 md:py-20 overflow-hidden"
+  id="hero-section"
+>
+  <!-- Decorative background elements -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <!-- Radial gradient glow top-left -->
+    <div
+      class="absolute top-0 left-0 w-[500px] h-[400px] rounded-full"
+      style="background: radial-gradient(ellipse at 0% 0%, rgba(71,180,204,0.07) 0%, transparent 70%); transform: translate(-30%, -30%);"
+    ></div>
+
+    <!-- Decorative teal lines — top right corner -->
+    <div class="absolute top-8 right-8 opacity-20" style="color: var(--color-accent);">
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+        <line x1="0" y1="0" x2="120" y2="0" stroke="currentColor" stroke-width="1"/>
+        <line x1="0" y1="24" x2="120" y2="24" stroke="currentColor" stroke-width="1"/>
+        <line x1="0" y1="48" x2="120" y2="48" stroke="currentColor" stroke-width="1"/>
+        <line x1="0" y1="72" x2="120" y2="72" stroke="currentColor" stroke-width="1"/>
+        <line x1="0" y1="96" x2="120" y2="96" stroke="currentColor" stroke-width="1"/>
+        <line x1="0" y1="0" x2="0" y2="120" stroke="currentColor" stroke-width="1"/>
+        <line x1="24" y1="0" x2="24" y2="120" stroke="currentColor" stroke-width="1"/>
+        <line x1="48" y1="0" x2="48" y2="120" stroke="currentColor" stroke-width="1"/>
+        <line x1="72" y1="0" x2="72" y2="120" stroke="currentColor" stroke-width="1"/>
+        <line x1="96" y1="0" x2="96" y2="120" stroke="currentColor" stroke-width="1"/>
+        <line x1="120" y1="0" x2="120" y2="120" stroke="currentColor" stroke-width="1"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="max-w-3xl relative z-10">
+
+    <!-- Available badge -->
+    {siteConfig.available && (
+      <div class="mb-8 hero-item">
+        <Badge variant="available">{t('hero.available')}</Badge>
+      </div>
+    )}
+
+    <!-- Main hero title — split into words for GSAP -->
+    <div class="mb-6 hero-title-wrap" aria-label={t('hero.greeting')}>
+      <p class="font-sans font-bold leading-none text-[var(--color-secondary)] mb-2 hero-item" style="font-size: clamp(0.9rem, 2vw, 1rem); letter-spacing: 0.1em; text-transform: uppercase;">
+        {lang === 'es' ? '¡Hola! />' : 'Hey there! />'}
+      </p>
+      <h1
+        class="font-sans font-bold leading-none"
+        style="font-size: clamp(3rem, 7vw, 5.5rem); letter-spacing: -0.04em;"
+        id="hero-title"
+      >
+        <span class="hero-word" style="color: var(--color-bright);">{lang === 'es' ? 'Soy' : "I'm"}</span>
+        <span>&nbsp;</span>
+        <span class="hero-word" style="color: var(--color-accent); display: inline-block;" id="hero-name">Nicolas</span>
+        <span class="hero-word" style="color: var(--color-bright);">.</span>
+      </h1>
+    </div>
+
+    <!-- Description lines -->
+    <div class="mb-10 space-y-0 hero-item">
+      <p
+        class="font-sans font-semibold leading-snug"
+        style="font-size: clamp(1.1rem, 2.5vw, 1.5rem); letter-spacing: -0.02em; color: var(--color-text);"
+        id="hero-desc"
+      >
+        {lang === 'es' ? (
+          <>
+            <span id="desc-line-1" class="block">Construyo backends escalables,</span>
+            <span id="desc-line-2" class="block">automatizo flujos con IA,</span>
+            <span id="desc-line-3" class="block" style="color: var(--color-secondary);">y creo interfaces limpias.</span>
+          </>
+        ) : (
+          <>
+            <span id="desc-line-1" class="block">I build scalable backends,</span>
+            <span id="desc-line-2" class="block">automate workflows with AI,</span>
+            <span id="desc-line-3" class="block" style="color: var(--color-secondary);">and craft clean interfaces.</span>
+          </>
+        )}
+      </p>
+    </div>
+
+    <!-- CTA buttons -->
+    <div class="flex flex-wrap gap-3 hero-item" id="hero-ctas">
+      <Button href={lang === 'en' ? '/about' : '/es/about'} variant="primary" size="lg">
+        {t('hero.cta')}
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </Button>
+      <Button href={lang === 'en' ? '/projects' : '/es/projects'} variant="secondary" size="lg">
+        {t('hero.cta.projects')}
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </Button>
+      <Button href={siteConfig.cvEn} variant="ghost" size="lg" external>
+        {t('hero.download.cv')}
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+      </Button>
+    </div>
+  </div>
+
+  <!-- Horizontal rule with teal glow at the bottom -->
+  <div
+    class="absolute bottom-0 left-8 right-0"
+    style="height: 1px; background: linear-gradient(90deg, rgba(71,180,204,0.6) 0%, rgba(71,180,204,0.1) 40%, transparent 100%); box-shadow: 0 0 12px rgba(71,180,204,0.2);"
+  ></div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const tl = gsap.timeline({ delay: 0.1 });
+
+  // Badge fade in
+  tl.fromTo(
+    '.hero-item:first-child',
+    { opacity: 0, y: 10 },
+    { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+  );
+
+  // Small label
+  tl.fromTo(
+    '.hero-item',
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
+    0.1
+  );
+
+  // Word-split animation for the hero title
+  tl.fromTo(
+    '.hero-word',
+    { opacity: 0, y: 40, rotationX: -20 },
+    {
+      opacity: 1,
+      y: 0,
+      rotationX: 0,
+      duration: 0.65,
+      stagger: 0.12,
+      ease: 'power3.out',
+    },
+    0.2
+  );
+
+  // Description lines cascade
+  tl.fromTo(
+    '#desc-line-1, #desc-line-2, #desc-line-3',
+    { opacity: 0, x: -16 },
+    { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' },
+    0.6
+  );
+
+  // Subtle name glow pulse after entrance
+  gsap.to('#hero-name', {
+    textShadow: '0 0 40px rgba(71,180,204,0.5)',
+    duration: 1.5,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut',
+    delay: 1.5,
+  });
+</script>

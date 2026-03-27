@@ -1,0 +1,133 @@
+---
+import SectionTitle from '../ui/SectionTitle.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import { stack } from '../../data/stack';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = useTranslations(lang);
+
+// Curated preview: 3 Backend, 2 Frontend, 1 Mobile, 2 AI & Automation
+const PREVIEW_NAMES = [
+  'Node.js',
+  'NestJS',
+  'TypeScript',
+  'React',
+  'Next.js',
+  'React Native',
+  'Make',
+  'OpenAI API',
+];
+
+const previewItems = PREVIEW_NAMES.map((name) => stack.find((s) => s.name === name)).filter(Boolean) as typeof stack;
+
+// Group by category for display
+const groupOrder = ['Backend', 'Frontend', 'Mobile', 'AI & Automation'];
+const grouped = groupOrder.map((cat) => ({
+  label: lang === 'es'
+    ? (cat === 'AI & Automation' ? 'IA & Automatización' : cat)
+    : cat,
+  items: previewItems.filter((s) => s.category === cat),
+})).filter((g) => g.items.length > 0);
+---
+
+<section
+  class="px-8 md:px-14 py-20 relative"
+  id="stack-section"
+  data-animate="reveal"
+  style="border-top: 1px solid rgba(255,255,255,0.05);"
+>
+  <!-- Subtle radial glow -->
+  <div
+    class="absolute bottom-0 right-0 w-[400px] h-[300px] pointer-events-none"
+    style="background: radial-gradient(ellipse at 100% 100%, rgba(71,180,204,0.05) 0%, transparent 70%);"
+    aria-hidden="true"
+  ></div>
+
+  <SectionTitle title={t('section.stack')} />
+
+  <div class="space-y-6" id="stack-groups">
+    {grouped.map((group) => (
+      <div class="stack-group flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+        <!-- Group label -->
+        <div class="flex-shrink-0 sm:w-28 sm:pt-1">
+          <span
+            class="text-[10px] font-bold font-sans uppercase tracking-widest"
+            style="color: var(--color-accent); opacity: 0.7;"
+          >{group.label}</span>
+        </div>
+
+        <!-- Items -->
+        <div class="flex flex-wrap gap-2 flex-1">
+          {group.items.map((item) => (
+            <span
+              class="stack-chip inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium font-sans transition-all duration-200 cursor-default"
+              style="background: rgba(255,255,255,0.04); color: var(--color-text); border: 1px solid rgba(255,255,255,0.08);"
+              title={lang === 'es' ? item.descriptionEs : item.description}
+            >
+              <!-- Color dot -->
+              <span
+                class="inline-block w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={`background: ${item.color};`}
+                aria-hidden="true"
+              ></span>
+              {item.name}
+            </span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- CTA -->
+  <div class="mt-10">
+    <a
+      href={lang === 'en' ? '/stack' : '/es/stack'}
+      class="inline-flex items-center gap-2 text-sm font-semibold font-sans transition-all duration-150"
+      style="color: var(--color-secondary);"
+      onmouseover="this.style.color='var(--color-accent)'"
+      onmouseout="this.style.color='var(--color-secondary)'"
+    >
+      {lang === 'es' ? 'Ver stack completo' : 'View full stack'}
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"/>
+        <path d="m12 5 7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  .stack-chip:hover {
+    border-color: rgba(71, 180, 204, 0.35) !important;
+    color: var(--color-accent) !important;
+    background: rgba(71, 180, 204, 0.06) !important;
+    transform: translateY(-1px);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.fromTo(
+    '#stack-groups .stack-group',
+    { opacity: 0, x: -20 },
+    {
+      opacity: 1,
+      x: 0,
+      duration: 0.5,
+      stagger: 0.1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: '#stack-section',
+        start: 'top 80%',
+      },
+    }
+  );
+</script>

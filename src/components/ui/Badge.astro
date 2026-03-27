@@ -1,0 +1,39 @@
+---
+interface Props {
+  variant?: 'available' | 'tag' | 'stack' | 'category';
+  class?: string;
+}
+
+const { variant = 'tag', class: className = '' } = Astro.props;
+
+const variantClasses = {
+  available: 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold font-sans',
+  tag: 'inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium font-sans',
+  stack: 'inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium font-sans transition-all duration-150',
+  category: 'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold font-sans uppercase tracking-wider',
+};
+
+const variantStyles = {
+  available: 'background: rgba(71,180,204,0.1); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.3);',
+  tag: 'background: rgba(71,180,204,0.08); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.2);',
+  stack: 'background: rgba(255,255,255,0.04); color: var(--color-secondary); border: 1px solid rgba(255,255,255,0.08);',
+  category: 'background: rgba(71,180,204,0.06); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.15); letter-spacing: 0.08em;',
+};
+---
+
+<span
+  class:list={[variantClasses[variant], className]}
+  style={variantStyles[variant]}
+>
+  {variant === 'available' && (
+    <span class="w-1.5 h-1.5 rounded-full pulse-dot" style="background: var(--color-accent);"></span>
+  )}
+  <slot />
+</span>
+
+<style>
+  span[style*="background: rgba(255,255,255,0.04)"]:hover {
+    border-color: rgba(71,180,204,0.3) !important;
+    color: var(--color-accent) !important;
+  }
+</style>

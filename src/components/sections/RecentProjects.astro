@@ -1,0 +1,173 @@
+---
+import Badge from '../ui/Badge.astro';
+import SectionTitle from '../ui/SectionTitle.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import { projects } from '../../data/projects';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = useTranslations(lang);
+
+// Show featured projects first; fall back to first 3 if not enough featured
+const featured = projects.filter((p) => p.featured);
+const display = featured.length >= 2 ? featured.slice(0, 3) : projects.slice(0, 3);
+---
+
+<section class="px-8 md:px-14 py-20" data-animate="reveal" id="projects-section">
+  <SectionTitle
+    title={t('section.projects')}
+    subtitle={lang === 'es' ? 'Una selección de trabajo del que estoy orgulloso.' : "A selection of work I'm proud of."}
+  />
+
+  <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3" id="projects-grid">
+    {display.map((project, index) => {
+      const desc = lang === 'es' ? project.shortDescEs : project.shortDesc;
+      const category = lang === 'es' ? project.categoryEs : project.category;
+      const tags = project.tags.slice(0, 3);
+      const firstImage = project.images[0];
+      const projectHref = `${lang === 'en' ? '' : '/es'}/projects/${project.id}`;
+
+      return (
+        <article
+          class="project-card group relative flex flex-col rounded-2xl overflow-hidden card-hover cursor-pointer"
+          style="background: var(--color-bg-card); border: 1px solid rgba(255,255,255,0.06);"
+          data-index={index}
+        >
+          <!-- Image area with real project image + fallback gradient -->
+          <div class="relative h-44 overflow-hidden flex-shrink-0" style="background: linear-gradient(135deg, rgba(71,180,204,0.08) 0%, rgba(15,21,31,0.9) 100%);">
+            <!-- Actual project image -->
+            <img
+              src={firstImage}
+              alt={project.title}
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+
+            <!-- Fallback: decorative gradient with project name (shown if image errors) -->
+            <div
+              class="absolute inset-0 hidden items-end justify-end p-4"
+              style="background: linear-gradient(135deg, rgba(71,180,204,0.08) 0%, rgba(15,21,31,0.95) 100%);"
+            >
+              <!-- Decorative grid -->
+              <div
+                class="absolute inset-0 opacity-30"
+                style={`background-image: linear-gradient(rgba(71,180,204,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(71,180,204,0.15) 1px, transparent 1px); background-size: 24px 24px;`}
+              ></div>
+              <!-- Large index number -->
+              <div
+                class="font-sans font-bold opacity-10 relative z-10"
+                style="font-size: 5rem; line-height: 1; color: var(--color-accent); letter-spacing: -0.05em;"
+              >
+                0{index + 1}
+              </div>
+            </div>
+
+            <!-- Dark overlay so text is readable over image -->
+            <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(17,24,39,0.85) 0%, transparent 50%);"></div>
+
+            <!-- Category badge -->
+            <div class="absolute top-3 left-3 z-10">
+              <Badge variant="category">{category}</Badge>
+            </div>
+
+            <!-- Teal accent line at bottom of image -->
+            <div
+              class="absolute bottom-0 left-0 right-0 h-px z-10"
+              style="background: linear-gradient(90deg, var(--color-accent), transparent); opacity: 0; transition: opacity 0.3s ease;"
+              id={`card-line-${index}`}
+            ></div>
+          </div>
+
+          <!-- Card content -->
+          <div class="flex flex-col flex-1 p-5">
+            <h3
+              class="font-sans font-bold text-base mb-2 transition-colors duration-150 group-hover:text-[var(--color-accent)]"
+              style="color: var(--color-bright); letter-spacing: -0.02em;"
+            >
+              {project.title}
+            </h3>
+
+            <p class="text-sm leading-relaxed mb-4 flex-1" style="color: var(--color-secondary);">
+              {desc}
+            </p>
+
+            <!-- Stack tags (first 3) -->
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              {tags.map((tech) => (
+                <Badge variant="stack">{tech}</Badge>
+              ))}
+            </div>
+
+            <!-- View link -->
+            <a
+              href={projectHref}
+              class="inline-flex items-center gap-2 text-sm font-semibold font-sans transition-all duration-150 animated-underline"
+              style="color: var(--color-accent);"
+            >
+              {lang === 'es' ? 'Ver caso de estudio' : 'View case study'}
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-150 group-hover:translate-x-1">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+
+  <!-- View all CTA -->
+  <div class="mt-10">
+    <a
+      href={lang === 'en' ? '/projects' : '/es/projects'}
+      class="inline-flex items-center gap-2 text-sm font-semibold font-sans transition-all duration-150 animated-underline"
+      style="color: var(--color-secondary);"
+      onmouseover="this.style.color='var(--color-text)'"
+      onmouseout="this.style.color='var(--color-secondary)'"
+    >
+      {t('projects.all')}
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14"/>
+        <path d="m12 5 7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Scroll reveal for the section
+  gsap.fromTo(
+    '#projects-grid .project-card',
+    { opacity: 0, y: 40 },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '#projects-section',
+        start: 'top 80%',
+      },
+    }
+  );
+
+  // Card hover: show accent bottom line
+  document.querySelectorAll('.project-card').forEach((card, i) => {
+    const line = document.getElementById(`card-line-${i}`);
+    card.addEventListener('mouseenter', () => {
+      if (line) line.style.opacity = '1';
+    });
+    card.addEventListener('mouseleave', () => {
+      if (line) line.style.opacity = '0';
+    });
+  });
+</script>
