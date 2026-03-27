@@ -1,0 +1,20 @@
+---
+import { siteConfig } from '../../data/config';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-white/5 py-6 px-8 mt-auto">
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[var(--color-secondary)]">
+    <p>{t('footer.built')}</p>
+    <p>© {year} {siteConfig.name}. {t('footer.rights')}</p>
+  </div>
+</footer>

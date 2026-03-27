@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from './Sidebar.astro';
+import Footer from './Footer.astro';
+import { getLangFromUrl } from '../../i18n/utils';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+---
+
+<BaseLayout title={title} description={description} image={image} lang={lang}>
+  <!-- Mobile top bar (hidden on desktop) -->
+  <header class="mobile-topbar">
+    <button id="hamburger-btn" aria-label="Open menu" class="hamburger-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="20" y2="18"/>
+      </svg>
+    </button>
+
+    <span class="mobile-logo">NB</span>
+
+    <!-- spacer to keep logo centered -->
+    <div style="width:40px;"></div>
+  </header>
+
+  <div class="sidebar-layout">
+    <Sidebar />
+    <!-- Overlay for mobile drawer -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <div class="main-content flex flex-col min-h-screen">
+      <main class="flex-1">
+        <slot />
+      </main>
+      <Footer lang={lang} />
+    </div>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var hamburger = document.getElementById('hamburger-btn');
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+
+    function openSidebar() {
+      sidebar && sidebar.classList.add('open');
+      overlay && overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar && sidebar.classList.remove('open');
+      overlay && overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    hamburger && hamburger.addEventListener('click', function () {
+      if (sidebar && sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+    overlay && overlay.addEventListener('click', closeSidebar);
+
+    // Close on nav link click (mobile navigation)
+    document.querySelectorAll('.sidebar .nav-link').forEach(function (link) {
+      link.addEventListener('click', closeSidebar);
+    });
+  })();
+</script>
