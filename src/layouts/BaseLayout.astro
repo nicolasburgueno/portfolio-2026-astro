@@ -56,10 +56,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://nicolasb
     <!-- Theme detection script — runs before render to avoid flash -->
     <script is:inline>
       (function () {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored ?? (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
+        function applyTheme() {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored ?? (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+        applyTheme();
+        // Re-apply after View Transitions swaps the <html> attributes
+        document.addEventListener('astro:after-swap', applyTheme);
       })();
     </script>
   </head>
