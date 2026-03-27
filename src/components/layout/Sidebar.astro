@@ -114,14 +114,14 @@ function isActive(href: string): boolean {
 
   <!-- Bottom section -->
   <div class="mt-auto">
-    <!-- Divider -->
-    <div class="h-px mb-4 mx-2" style="background: linear-gradient(90deg, transparent, rgba(71,180,204,0.15), transparent);"></div>
-
     <!-- Theme + Language toggles -->
     <div class="flex items-center justify-between px-1 mb-4">
       <ThemeToggle client:load />
       <LanguageSwitch lang={lang} client:load />
     </div>
+
+    <!-- Divider -->
+    <div class="h-px mb-4 mx-2" style="background: linear-gradient(90deg, transparent, rgba(71,180,204,0.15), transparent);"></div>
 
     <!-- Social links -->
     <div class="flex items-center justify-center gap-2">
