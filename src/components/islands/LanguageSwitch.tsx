@@ -1,3 +1,4 @@
+import { navigate } from 'astro:transitions/client';
 import type { Lang } from '../../i18n/ui';
 
 interface Props {
@@ -17,7 +18,7 @@ export default function LanguageSwitch({ lang }: Props) {
       nextPath = currentPath.replace(/^\/es/, '') || '/';
     }
 
-    window.location.href = nextPath;
+    navigate(nextPath);
   }
 
   return (
