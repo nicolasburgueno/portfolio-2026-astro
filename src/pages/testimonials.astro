@@ -114,6 +114,14 @@ const items = testimonials.map((item) => ({
     const mc = document.querySelector('.main-content') as HTMLElement | null;
     if (mc) { mc.style.overflow = ''; mc.style.height = ''; }
   }
+
   document.addEventListener('astro:page-load', lockBody);
-  document.addEventListener('astro:before-swap', unlockBody);
+
+  // Clean up both listeners when navigating away so they don't
+  // leak into subsequent pages and break their scroll.
+  document.addEventListener('astro:before-swap', function onBeforeSwap() {
+    unlockBody();
+    document.removeEventListener('astro:page-load', lockBody);
+    document.removeEventListener('astro:before-swap', onBeforeSwap);
+  });
 </script>
