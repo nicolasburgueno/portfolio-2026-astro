@@ -198,8 +198,6 @@ export default function TestimonialsSpotlight({ items }: Props) {
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400&display=swap');
-
         .spotlight-root {
           position: relative;
           max-width: 860px;
@@ -288,7 +286,7 @@ export default function TestimonialsSpotlight({ items }: Props) {
         /* Quote text — fills available height, scrolls internally */
         .spotlight-quote {
           font-size: clamp(1.15rem, 1.8vw, 1.35rem);
-          font-family: 'Outfit', sans-serif;
+          font-family: var(--font-body, "Inter Variable", system-ui, sans-serif);
           font-weight: 300;
           font-style: normal;
           letter-spacing: 0.01em;
@@ -482,8 +480,11 @@ export default function TestimonialsSpotlight({ items }: Props) {
             padding: 28px 24px;
             height: 420px;
           }
-          .bg-quote { font-size: 8rem; }
-          .spotlight-quote { font-size: 0.9rem; }
+          .bg-quote { display: none; }
+          .spotlight-quote {
+            font-size: 0.9rem;
+            padding-top: 0;
+          }
         }
       `}</style>
     </div>
