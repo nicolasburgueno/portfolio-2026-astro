@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -152,7 +153,7 @@ interface PreviewModalProps {
 }
 
 function PreviewModal({ data, t, isLoading, onConfirm, onCancel }: PreviewModalProps) {
-  return (
+  return createPortal(
     <div
       style={{
         position: 'fixed',
@@ -183,7 +184,7 @@ function PreviewModal({ data, t, isLoading, onConfirm, onCancel }: PreviewModalP
         }}
       >
         {/* Header */}
-        <div className="mb-5">
+        <div className="mb-5" style={{ textAlign: 'center' }}>
           <h3
             id="preview-modal-title"
             style={{
@@ -334,7 +335,8 @@ function PreviewModal({ data, t, isLoading, onConfirm, onCancel }: PreviewModalP
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
