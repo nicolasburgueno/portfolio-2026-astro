@@ -474,7 +474,7 @@ export default function TestimonialsSpotlight({ items }: Props) {
           color: var(--color-accent, #47B4CC);
         }
 
-        [data-theme="light"] .bg-quote {
+[data-theme="light"] .bg-quote {
           opacity: 0.08;
         }
 
