@@ -18,6 +18,13 @@ interface Translations {
   errorEmail: string;
   errorSubject: string;
   errorMessage: string;
+  confirmTitle: string;
+  confirmSubtitle: string;
+  confirmTo: string;
+  confirmSubjectLabel: string;
+  confirmPreview: string;
+  confirmCancel: string;
+  confirmSend: string;
 }
 
 interface ContactFormProps {
@@ -25,7 +32,6 @@ interface ContactFormProps {
   t: Translations;
 }
 
-// Schema — built dynamically so error messages are i18n aware
 function buildSchema(t: Translations) {
   return z.object({
     name: z.string().min(2, t.errorName),
@@ -80,7 +86,6 @@ function Field({ id, label, error, children }: FieldProps) {
   );
 }
 
-// Shared input/textarea style logic
 function getFieldStyle(hasError: boolean): React.CSSProperties {
   return {
     backgroundColor: 'var(--color-bg-darker)',
@@ -136,12 +141,232 @@ function SuccessState({ message }: { message: string }) {
   );
 }
 
+// --- Preview Modal ---
+
+interface PreviewModalProps {
+  data: FormData;
+  t: Translations;
+  isLoading: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+function PreviewModal({ data, t, isLoading, onConfirm, onCancel }: PreviewModalProps) {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+        background: 'rgba(0,0,0,0.65)',
+        backdropFilter: 'blur(6px)',
+        animation: 'fadeSlideUp 0.25s ease forwards',
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="preview-modal-title"
+      onClick={(e) => { if (e.target === e.currentTarget && !isLoading) onCancel(); }}
+    >
+      <div
+        style={{
+          background: 'var(--color-bg-card, #0f1a1f)',
+          border: '1px solid rgba(71,180,204,0.2)',
+          borderRadius: '16px',
+          padding: '28px',
+          width: '100%',
+          maxWidth: '480px',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.5), 0 0 40px rgba(71,180,204,0.06)',
+        }}
+      >
+        {/* Header */}
+        <div className="mb-5">
+          <h3
+            id="preview-modal-title"
+            style={{
+              margin: 0,
+              fontSize: '1.1rem',
+              fontWeight: 700,
+              fontFamily: 'var(--font-sans)',
+              color: 'var(--color-bright)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {t.confirmTitle}
+          </h3>
+          <p style={{ margin: '6px 0 0', fontSize: '13px', color: 'var(--color-secondary)' }}>
+            {t.confirmSubtitle}
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: 'rgba(71,180,204,0.1)', marginBottom: '20px' }} />
+
+        {/* Fields preview */}
+        <div className="flex flex-col gap-4">
+          <PreviewRow label={t.confirmTo} value={`${data.name} <${data.email}>`} />
+          <PreviewRow label={t.confirmSubjectLabel} value={data.subject} />
+          <div>
+            <span
+              style={{
+                display: 'block',
+                fontSize: '10px',
+                fontWeight: 600,
+                fontFamily: 'var(--font-sans)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'rgba(71,180,204,0.5)',
+                marginBottom: '6px',
+              }}
+            >
+              {t.confirmPreview}
+            </span>
+            <div
+              style={{
+                fontSize: '13px',
+                lineHeight: 1.65,
+                color: 'var(--color-text)',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                maxHeight: '140px',
+                overflowY: 'auto',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}
+            >
+              {data.message}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-3 mt-6">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isLoading}
+            style={{
+              flex: 1,
+              padding: '11px 16px',
+              borderRadius: '8px',
+              fontSize: '13px',
+              fontWeight: 600,
+              fontFamily: 'var(--font-sans)',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              color: 'var(--color-secondary)',
+              transition: 'border-color 0.2s, color 0.2s',
+              opacity: isLoading ? 0.5 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!isLoading) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.2)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.1)';
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--color-secondary)';
+            }}
+          >
+            {t.confirmCancel}
+          </button>
+
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isLoading}
+            style={{
+              flex: 2,
+              padding: '11px 16px',
+              borderRadius: '8px',
+              fontSize: '13px',
+              fontWeight: 600,
+              fontFamily: 'var(--font-sans)',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              background: isLoading ? 'rgba(71,180,204,0.4)' : 'var(--color-accent)',
+              color: '#0c1219',
+              border: 'none',
+              boxShadow: isLoading ? 'none' : '0 0 20px rgba(71,180,204,0.3)',
+              transition: 'background 0.2s, box-shadow 0.2s, transform 0.15s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+            onMouseEnter={(e) => {
+              if (!isLoading) {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 28px rgba(71,180,204,0.45)';
+                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(71,180,204,0.3)';
+                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+              }
+            }}
+          >
+            {isLoading ? (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  style={{ animation: 'spin 0.8s linear infinite' }}
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                {t.sending}
+              </>
+            ) : (
+              t.confirmSend
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PreviewRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span
+        style={{
+          display: 'block',
+          fontSize: '10px',
+          fontWeight: 600,
+          fontFamily: 'var(--font-sans)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          color: 'rgba(71,180,204,0.5)',
+          marginBottom: '4px',
+        }}
+      >
+        {label}
+      </span>
+      <span style={{ fontSize: '13px', color: 'var(--color-text)' }}>{value}</span>
+    </div>
+  );
+}
+
 // --- Main form ---
 
 export default function ContactForm({ t }: ContactFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [pendingData, setPendingData] = useState<FormData | null>(null);
 
   const schema = buildSchema(t);
 
@@ -153,24 +378,42 @@ export default function ContactForm({ t }: ContactFormProps) {
     resolver: zodResolver(schema),
   });
 
-  async function onSubmit(data: FormData) {
+  // Step 1: validation passes → show preview modal
+  function onSubmit(data: FormData) {
+    setServerError('');
+    setPendingData(data);
+  }
+
+  // Step 2: user confirms → send to /api/contact
+  async function handleConfirm() {
+    if (!pendingData) return;
     setIsLoading(true);
     setServerError('');
 
-    // TODO: Replace with real Cloudflare Worker endpoint
-    // Example: await fetch('https://contact.nicolasburgueno.dev', { method: 'POST', body: JSON.stringify(data) })
-    console.log('[ContactForm] Submitting:', data);
-
     try {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      console.log('[ContactForm] Sent successfully (simulated)');
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pendingData),
+      });
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        throw new Error((json as { error?: string }).error ?? t.error);
+      }
+
+      setPendingData(null);
       setIsSuccess(true);
-    } catch {
-      setServerError(t.error);
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : t.error);
+      setPendingData(null);
     } finally {
       setIsLoading(false);
     }
+  }
+
+  function handleCancel() {
+    if (!isLoading) setPendingData(null);
   }
 
   if (isSuccess) {
@@ -194,145 +437,142 @@ export default function ContactForm({ t }: ContactFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
-      {/* Name + Email row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <Field id="name" label={t.name} error={errors.name?.message}>
-          <input
-            id="name"
-            type="text"
-            autoComplete="name"
-            aria-invalid={!!errors.name}
-            style={inputBase(!!errors.name)}
-            {...register('name')}
-            {...focusHandlers}
-          />
-        </Field>
-
-        <Field id="email" label={t.email} error={errors.email?.message}>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            aria-invalid={!!errors.email}
-            style={inputBase(!!errors.email)}
-            {...register('email')}
-            {...focusHandlers}
-          />
-        </Field>
-      </div>
-
-      {/* Subject */}
-      <Field id="subject" label={t.subject} error={errors.subject?.message}>
-        <input
-          id="subject"
-          type="text"
-          aria-invalid={!!errors.subject}
-          style={inputBase(!!errors.subject)}
-          {...register('subject')}
-          {...focusHandlers}
+    <>
+      {pendingData && (
+        <PreviewModal
+          data={pendingData}
+          t={t}
+          isLoading={isLoading}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
         />
-      </Field>
-
-      {/* Message */}
-      <Field id="message" label={t.message} error={errors.message?.message}>
-        <textarea
-          id="message"
-          rows={5}
-          aria-invalid={!!errors.message}
-          style={{ ...inputBase(!!errors.message), resize: 'vertical', minHeight: '120px' }}
-          {...register('message')}
-          onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(71,180,204,0.7)';
-            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(71,180,204,0.08)';
-          }}
-          onBlur={(e) => {
-            const hasError = e.currentTarget.getAttribute('aria-invalid') === 'true';
-            e.currentTarget.style.borderColor = hasError
-              ? 'rgba(248,113,113,0.5)'
-              : 'rgba(71,180,204,0.15)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-        />
-      </Field>
-
-      {/* Server error */}
-      {serverError && (
-        <p className="text-sm px-3 py-2 rounded-lg" style={{ color: '#f87171', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)' }}>
-          {serverError}
-        </p>
       )}
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        style={{
-          background: isLoading ? 'rgba(71,180,204,0.4)' : 'var(--color-accent)',
-          color: '#0c1219',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '14px 28px',
-          fontSize: '14px',
-          fontWeight: '600',
-          fontFamily: 'var(--font-sans)',
-          cursor: isLoading ? 'not-allowed' : 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          letterSpacing: '0.02em',
-          transition: 'background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease',
-          boxShadow: isLoading ? 'none' : '0 0 20px rgba(71,180,204,0.25)',
-          alignSelf: 'flex-start',
-          minWidth: '160px',
-        }}
-        onMouseEnter={(e) => {
-          if (!isLoading) {
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
+        {/* Name + Email row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <Field id="name" label={t.name} error={errors.name?.message}>
+            <input
+              id="name"
+              type="text"
+              autoComplete="name"
+              aria-invalid={!!errors.name}
+              style={inputBase(!!errors.name)}
+              {...register('name')}
+              {...focusHandlers}
+            />
+          </Field>
+
+          <Field id="email" label={t.email} error={errors.email?.message}>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              aria-invalid={!!errors.email}
+              style={inputBase(!!errors.email)}
+              {...register('email')}
+              {...focusHandlers}
+            />
+          </Field>
+        </div>
+
+        {/* Subject */}
+        <Field id="subject" label={t.subject} error={errors.subject?.message}>
+          <input
+            id="subject"
+            type="text"
+            aria-invalid={!!errors.subject}
+            style={inputBase(!!errors.subject)}
+            {...register('subject')}
+            {...focusHandlers}
+          />
+        </Field>
+
+        {/* Message */}
+        <Field id="message" label={t.message} error={errors.message?.message}>
+          <textarea
+            id="message"
+            rows={5}
+            aria-invalid={!!errors.message}
+            style={{ ...inputBase(!!errors.message), resize: 'vertical', minHeight: '120px' }}
+            {...register('message')}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(71,180,204,0.7)';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(71,180,204,0.08)';
+            }}
+            onBlur={(e) => {
+              const hasError = e.currentTarget.getAttribute('aria-invalid') === 'true';
+              e.currentTarget.style.borderColor = hasError
+                ? 'rgba(248,113,113,0.5)'
+                : 'rgba(71,180,204,0.15)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          />
+        </Field>
+
+        {/* Server error */}
+        {serverError && (
+          <p
+            className="text-sm px-3 py-2 rounded-lg"
+            style={{
+              color: '#f87171',
+              background: 'rgba(248,113,113,0.08)',
+              border: '1px solid rgba(248,113,113,0.2)',
+            }}
+          >
+            {serverError}
+          </p>
+        )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          style={{
+            background: 'var(--color-accent)',
+            color: '#0c1219',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '14px 28px',
+            fontSize: '14px',
+            fontWeight: '600',
+            fontFamily: 'var(--font-sans)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            letterSpacing: '0.02em',
+            transition: 'background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease',
+            boxShadow: '0 0 20px rgba(71,180,204,0.25)',
+            alignSelf: 'flex-start',
+            minWidth: '160px',
+          }}
+          onMouseEnter={(e) => {
             (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 30px rgba(71,180,204,0.4)';
             (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isLoading) {
+          }}
+          onMouseLeave={(e) => {
             (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(71,180,204,0.25)';
             (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
-          }
-        }}
-      >
-        {isLoading ? (
-          <>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              style={{ animation: 'spin 0.8s linear infinite' }}
-            >
-              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-            </svg>
-            {t.sending}
-          </>
-        ) : (
-          t.send
-        )}
-      </button>
+          }}
+        >
+          {t.send}
+        </button>
 
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes checkDraw {
-          from { stroke-dashoffset: 30; opacity: 0; }
-          to   { stroke-dashoffset: 0; opacity: 1; }
-        }
-      `}</style>
-    </form>
+        <style>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+          @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes checkDraw {
+            from { stroke-dashoffset: 30; opacity: 0; }
+            to   { stroke-dashoffset: 0; opacity: 1; }
+          }
+        `}</style>
+      </form>
+    </>
   );
 }
