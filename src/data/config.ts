@@ -18,6 +18,7 @@ export const navLinks = [
   { href: '/about', labelKey: 'nav.about', icon: 'User' },
   { href: '/projects', labelKey: 'nav.projects', icon: 'FolderKanban' },
   { href: '/stack', labelKey: 'nav.stack', icon: 'Layers' },
+  { href: '/testimonials', labelKey: 'nav.testimonials', icon: 'MessageSquare' },
   { href: '/blog', labelKey: 'nav.blog', icon: 'BookOpen' },
   { href: '/contact', labelKey: 'nav.contact', icon: 'Mail' },
 ] as const;

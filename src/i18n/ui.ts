@@ -14,6 +14,7 @@ export const ui = {
     'nav.about': 'About',
     'nav.projects': 'Projects',
     'nav.stack': 'Stack',
+    'nav.testimonials': 'Testimonials',
     'nav.contact': 'Contact',
     'nav.blog': 'Blog',
 
@@ -78,6 +79,13 @@ export const ui = {
     'contact.error.email': 'Invalid email',
     'contact.error.subject': 'Subject is too short',
     'contact.error.message': 'Message is too short (min 20 chars)',
+    'contact.confirm.title': 'Ready to send?',
+    'contact.confirm.subtitle': 'Review your message before it goes out.',
+    'contact.confirm.to': 'To',
+    'contact.confirm.subject': 'Subject',
+    'contact.confirm.preview': 'Message',
+    'contact.confirm.cancel': 'Go back',
+    'contact.confirm.send': 'Send it →',
 
     // Stack page
     'stack.badge': 'Tech Stack',
@@ -101,6 +109,12 @@ export const ui = {
     'blog.minRead': 'min read',
     'blog.originalOn': 'Originally on Medium',
 
+    // Testimonials
+    'testimonials.title': 'Testimonials: What They Say',
+    'testimonials.subtitle': 'What people I\'ve worked with say',
+    'testimonials.readMore': 'Read more',
+    'testimonials.readLess': 'Read less',
+
     // Footer
     'footer.built': 'Built with Astro & ☕',
     'footer.rights': 'All rights reserved.',
@@ -115,6 +129,7 @@ export const ui = {
     'nav.about': 'Sobre mí',
     'nav.projects': 'Proyectos',
     'nav.stack': 'Stack',
+    'nav.testimonials': 'Testimonios',
     'nav.contact': 'Contacto',
     'nav.blog': 'Blog',
 
@@ -179,6 +194,13 @@ export const ui = {
     'contact.error.email': 'Email inválido',
     'contact.error.subject': 'El asunto es muy corto',
     'contact.error.message': 'El mensaje es muy corto (mínimo 20 caracteres)',
+    'contact.confirm.title': '¿Listo para enviar?',
+    'contact.confirm.subtitle': 'Revisá tu mensaje antes de enviarlo.',
+    'contact.confirm.to': 'Para',
+    'contact.confirm.subject': 'Asunto',
+    'contact.confirm.preview': 'Mensaje',
+    'contact.confirm.cancel': 'Volver',
+    'contact.confirm.send': 'Enviar →',
 
     // Stack page
     'stack.badge': 'Tech Stack',
@@ -201,6 +223,12 @@ export const ui = {
     'blog.backToBlog': '← Volver al Blog',
     'blog.minRead': 'min de lectura',
     'blog.originalOn': 'Publicado en Medium',
+
+    // Testimonials
+    'testimonials.title': 'Testimonios: Lo Que Dicen',
+    'testimonials.subtitle': 'Lo que dicen quienes han trabajado conmigo',
+    'testimonials.readMore': 'Leer más',
+    'testimonials.readLess': 'Leer menos',
 
     // Footer
     'footer.built': 'Hecho con Astro & ☕',

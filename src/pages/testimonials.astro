@@ -1,0 +1,119 @@
+---
+import Layout from '../components/layout/Layout.astro';
+import TestimonialsSpotlight from '../components/islands/TestimonialsSpotlight';
+import { testimonials } from '../data/testimonials';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const items = testimonials.map((item) => ({
+  name: item.name,
+  role: item.role[lang],
+  company: item.company,
+  image: item.image,
+  text: item.text[lang],
+}));
+---
+
+<Layout title={t('nav.testimonials')}>
+  <div class="spotlight-page">
+
+    <div class="sp-header">
+      <p class="label">{t('testimonials.subtitle')}</p>
+      <h1 class="heading">{t('testimonials.title')}</h1>
+      <p class="hint">Use ← → arrows or click the avatars to navigate · auto-advances every 7s</p>
+    </div>
+
+    <div class="sp-body">
+      <TestimonialsSpotlight client:load items={items} />
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  .spotlight-page {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .spotlight-page {
+      height: 100dvh;
+      overflow: hidden;
+      padding: 56px 32px 48px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .spotlight-page {
+      max-width: 1100px;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .spotlight-page {
+      max-width: 1240px;
+    }
+  }
+
+  .sp-header {
+    text-align: center;
+    flex-shrink: 0;
+    margin-bottom: 16px;
+  }
+
+  .label {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 6px;
+  }
+
+  .heading {
+    font-family: var(--font-sans);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--color-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .hint {
+    font-size: 0.72rem;
+    color: var(--color-secondary);
+  }
+
+  .sp-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+
+<script>
+  function lockBody() {
+    if (window.innerWidth >= 768) {
+      document.body.style.overflow = 'hidden';
+      const mc = document.querySelector('.main-content') as HTMLElement | null;
+      if (mc) { mc.style.overflow = 'hidden'; mc.style.height = '100dvh'; }
+    }
+  }
+  function unlockBody() {
+    document.body.style.overflow = '';
+    const mc = document.querySelector('.main-content') as HTMLElement | null;
+    if (mc) { mc.style.overflow = ''; mc.style.height = ''; }
+  }
+  document.addEventListener('astro:page-load', lockBody);
+  document.addEventListener('astro:before-swap', unlockBody);
+</script>

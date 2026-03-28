@@ -1,0 +1,330 @@
+---
+import { testimonials } from '../../data/testimonials';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+function getInitials(name: string) {
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase();
+}
+---
+
+<section class="testimonials-section">
+  <div class="mb-10" data-animate="fade-up">
+    <p class="section-label">{t('testimonials.subtitle')}</p>
+    <h2 class="section-heading">{t('testimonials.title')}</h2>
+  </div>
+
+  <div class="testimonials-grid">
+    {testimonials.map((item, i) => (
+      <article class="t-card" data-testimonial-card>
+        <!-- Quote mark -->
+        <div class="quote-mark" aria-hidden="true">"</div>
+
+        <!-- Text -->
+        <div class="t-text-wrap">
+          <p class="t-text" data-full-text={item.text[lang]}>
+            {item.text[lang]}
+          </p>
+          <button
+            class="t-read-more"
+            data-read-more
+            data-more={t('testimonials.readMore')}
+            data-less={t('testimonials.readLess')}
+            aria-expanded="false"
+          >
+            {t('testimonials.readMore')}
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="t-divider"></div>
+
+        <!-- Author -->
+        <div class="t-author">
+          <div class="t-avatar-wrap">
+            <img
+              src={item.image}
+              alt={item.name}
+              class="t-avatar"
+              width="44"
+              height="44"
+              loading="lazy"
+              decoding="async"
+              onerror={`this.style.display='none'; this.nextElementSibling.style.display='flex';`}
+            />
+            <div class="t-avatar-fallback" style="display:none;">
+              {getInitials(item.name)}
+            </div>
+          </div>
+          <div class="t-author-info">
+            <span class="t-name">{item.name}</span>
+            <span class="t-role">{item.role[lang]}</span>
+            <span class="t-company">{item.company}</span>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .testimonials-section {
+    margin-bottom: 5rem;
+  }
+
+  .section-label {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 6px;
+  }
+
+  .section-heading {
+    font-family: var(--font-sans);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--color-bright);
+    letter-spacing: -0.02em;
+  }
+
+  /* Masonry via CSS columns */
+  .testimonials-grid {
+    columns: 3;
+    column-gap: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    .testimonials-grid {
+      columns: 2;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .testimonials-grid {
+      columns: 1;
+    }
+  }
+
+  /* Card */
+  .t-card {
+    break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(71, 180, 204, 0.1);
+    background: rgba(17, 24, 39, 0.55);
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .t-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .t-card:hover {
+    border-color: rgba(71, 180, 204, 0.28);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Quote mark */
+  .quote-mark {
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--color-accent);
+    font-family: Georgia, serif;
+    opacity: 0.5;
+    margin-bottom: -8px;
+  }
+
+  /* Text */
+  .t-text-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .t-text {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: var(--color-text);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .t-text.expanded {
+    -webkit-line-clamp: unset;
+    display: block;
+  }
+
+  .t-read-more {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    width: fit-content;
+    transition: opacity 0.15s;
+  }
+
+  .t-read-more:hover {
+    opacity: 0.75;
+  }
+
+  /* Divider */
+  .t-divider {
+    height: 1px;
+    background: rgba(71, 180, 204, 0.1);
+  }
+
+  /* Author */
+  .t-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .t-avatar-wrap {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+
+  .t-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(71, 180, 204, 0.3);
+  }
+
+  .t-avatar-fallback {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(71, 180, 204, 0.12);
+    border: 2px solid rgba(71, 180, 204, 0.3);
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .t-author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .t-name {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-bright);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .t-role {
+    font-size: 0.72rem;
+    color: var(--color-accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .t-company {
+    font-size: 0.7rem;
+    color: var(--color-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initTestimonials() {
+    // Scroll reveal
+    document.querySelectorAll<HTMLElement>('[data-testimonial-card]').forEach((card, i) => {
+      gsap.fromTo(
+        card,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 90%',
+          },
+          delay: (i % 3) * 0.08,
+        }
+      );
+    });
+
+    // Read more / read less toggle
+    document.querySelectorAll<HTMLButtonElement>('[data-read-more]').forEach((btn) => {
+      const card = btn.closest('[data-testimonial-card]');
+      const textEl = card?.querySelector<HTMLElement>('.t-text');
+      if (!textEl) return;
+
+      // Only show button if text is actually clamped
+      const isClamped = textEl.scrollHeight > textEl.clientHeight + 4;
+      if (!isClamped) {
+        btn.style.display = 'none';
+        return;
+      }
+
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        if (expanded) {
+          textEl.classList.remove('expanded');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.textContent = btn.dataset.more ?? 'Read more';
+        } else {
+          textEl.classList.add('expanded');
+          btn.setAttribute('aria-expanded', 'true');
+          btn.textContent = btn.dataset.less ?? 'Read less';
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initTestimonials);
+</script>
