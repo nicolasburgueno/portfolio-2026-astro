@@ -367,6 +367,10 @@ const values = [
     backdrop-filter: blur(8px);
   }
 
+  [data-theme="light"] .timeline-card {
+    backdrop-filter: none;
+  }
+
   .timeline-period {
     font-family: var(--font-sans);
     font-size: 0.7rem;
@@ -430,6 +434,7 @@ const values = [
             scrollTrigger: {
               trigger: entry,
               start: 'top 88%',
+              once: true,
             },
           }
         );

@@ -531,30 +531,30 @@ export default function ContactForm({ t }: ContactFormProps) {
           type="submit"
           style={{
             background: 'var(--color-accent)',
-            color: '#0c1219',
+            color: 'var(--color-bg)',
             border: 'none',
-            borderRadius: '8px',
-            padding: '14px 28px',
+            borderRadius: '12px',
+            padding: '12px 24px',
             fontSize: '14px',
             fontWeight: '600',
             fontFamily: 'var(--font-sans)',
             cursor: 'pointer',
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
-            justifyContent: 'center',
             gap: '8px',
             letterSpacing: '0.02em',
-            transition: 'background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease',
-            boxShadow: '0 0 20px rgba(71,180,204,0.25)',
+            transition: 'background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease',
+            boxShadow: '0 0 20px rgba(71,180,204,0.2)',
             alignSelf: 'flex-start',
-            minWidth: '160px',
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 30px rgba(71,180,204,0.4)';
+            (e.currentTarget as HTMLButtonElement).style.background = 'rgba(71,180,204,0.85)';
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 28px rgba(71,180,204,0.35)';
             (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(71,180,204,0.25)';
+            (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-accent)';
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(71,180,204,0.2)';
             (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
           }}
         >
