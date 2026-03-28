@@ -124,9 +124,6 @@ export default function TestimonialsSpotlight({ items }: Props) {
         {/* Background quote mark */}
         <div className="bg-quote" aria-hidden="true">"</div>
 
-        {/* Non-scrollable spacer — keeps the blockquote below the quote marks */}
-        <div className="quote-spacer" aria-hidden="true" />
-
         {/* Quote text — data-lenis-prevent stops Lenis from intercepting wheel here */}
         <blockquote
           className="spotlight-quote"
@@ -281,7 +278,7 @@ export default function TestimonialsSpotlight({ items }: Props) {
           line-height: 1;
           font-family: Georgia, serif;
           color: var(--color-accent, #47B4CC);
-          opacity: 0.18;
+          opacity: 0.05;
           pointer-events: none;
           user-select: none;
         }
@@ -477,10 +474,8 @@ export default function TestimonialsSpotlight({ items }: Props) {
           color: var(--color-accent, #47B4CC);
         }
 
-        /* Non-scrollable spacer that reserves room below the quote marks */
-        .quote-spacer {
-          flex-shrink: 0;
-          height: 110px;
+        [data-theme="light"] .bg-quote {
+          opacity: 0.08;
         }
 
         @media (max-width: 640px) {
@@ -488,8 +483,7 @@ export default function TestimonialsSpotlight({ items }: Props) {
             padding: 28px 24px;
             height: 420px;
           }
-          .bg-quote { font-size: 7rem; }
-          .quote-spacer { height: 60px; }
+          .bg-quote { font-size: 8rem; }
           .spotlight-quote { font-size: 0.9rem; }
         }
       `}</style>
