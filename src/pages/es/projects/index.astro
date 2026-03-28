@@ -23,7 +23,7 @@ const categories = ['Todos', 'Full Stack', 'Mobile', 'Full Stack + Mobile'];
     <div class="flex flex-wrap gap-2 mb-10" id="filter-tabs">
       {categories.map((cat, i) => (
         <button
-          class="filter-btn font-sans text-xs font-medium px-4 py-2 rounded-lg transition-all duration-200"
+          class="filter-btn font-sans text-xs font-medium px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer"
           data-filter={i === 0 ? 'All' : cat}
           style={i === 0
             ? 'background: rgba(71,180,204,0.15); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.4);'
@@ -131,24 +131,30 @@ const categories = ['Todos', 'Full Stack', 'Mobile', 'Full Stack + Mobile'];
 </Layout>
 
 <script>
-  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
-  const cards = document.querySelectorAll<HTMLElement>('.project-card');
-
   const activeStyle = 'background: rgba(71,180,204,0.15); color: var(--color-accent); border: 1px solid rgba(71,180,204,0.4);';
   const inactiveStyle = 'background: rgba(255,255,255,0.04); color: var(--color-secondary); border: 1px solid rgba(255,255,255,0.08);';
 
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter ?? 'All';
+  function initFilters() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
 
-      buttons.forEach((b) => (b.style.cssText = inactiveStyle));
-      btn.style.cssText = activeStyle;
+    if (!buttons.length) return;
 
-      cards.forEach((card) => {
-        const cat = card.dataset.category ?? '';
-        const show = filter === 'All' || cat === filter || (filter === 'Full Stack' && cat.startsWith('Full Stack'));
-        card.style.display = show ? '' : 'none';
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter ?? 'All';
+
+        buttons.forEach((b) => (b.style.cssText = inactiveStyle));
+        btn.style.cssText = activeStyle;
+
+        cards.forEach((card) => {
+          const cat = card.dataset.category ?? '';
+          const show = filter === 'All' || cat === filter || (filter === 'Full Stack' && cat.startsWith('Full Stack'));
+          card.style.display = show ? '' : 'none';
+        });
       });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', initFilters);
 </script>

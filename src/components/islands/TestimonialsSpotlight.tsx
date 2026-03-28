@@ -198,6 +198,8 @@ export default function TestimonialsSpotlight({ items }: Props) {
       </div>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400&display=swap');
+
         .spotlight-root {
           position: relative;
           max-width: 860px;
@@ -241,8 +243,8 @@ export default function TestimonialsSpotlight({ items }: Props) {
           position: relative;
           padding: 48px 56px;
           border-radius: 20px;
-          border: 1px solid rgba(71,180,204,0.12);
-          background: rgba(17,24,39,0.6);
+          border: 1px solid var(--color-card-border, rgba(71,180,204,0.12));
+          background: var(--color-card-bg, rgba(17,24,39,0.6));
           backdrop-filter: blur(12px);
           overflow: hidden;
           transition: opacity 0.35s ease, transform 0.35s ease;
@@ -278,19 +280,24 @@ export default function TestimonialsSpotlight({ items }: Props) {
           line-height: 1;
           font-family: Georgia, serif;
           color: var(--color-accent, #47B4CC);
-          opacity: 0.04;
+          opacity: 0.18;
           pointer-events: none;
           user-select: none;
         }
 
         /* Quote text — fills available height, scrolls internally */
         .spotlight-quote {
-          font-size: clamp(1rem, 1.5vw, 1.15rem);
-          line-height: 1.8;
+          font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+          font-family: 'Outfit', sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          letter-spacing: 0.01em;
+          line-height: 1.9;
           color: var(--color-text, #CBD5E1);
           position: relative;
           z-index: 1;
           margin: 0;
+          padding-top: 3rem;
           quotes: none;
           flex: 1;
           min-height: 0;
